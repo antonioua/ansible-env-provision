@@ -150,7 +150,7 @@ $ ansible-playbook -i ./hosts/application/prod/application_production_all.ini ap
 - sweep_up (clear application's heap dumps and package-old-*)
 
 
-* Push jks_t.keystore to update AKAMAI intermediate certificate:
+* Push jks_t.keystore to update CDN intermediate certificate:
 ~~~bash
 ansible-playbook -i hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e 'hosti=glp-wpl3galabingo-privil-admin-01.galaapplication.domain1' -t push_trust_keystore
 ~~~
