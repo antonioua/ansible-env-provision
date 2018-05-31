@@ -64,11 +64,11 @@ $ ansible localhost -m setup -a 'filter=ansible_os_family'
 $ ansible wpl-dev5-adminpor1.wpl.domain1 -i ./hosts/application/dev/application_dev_all.ini -m setup -a 'filter=facter_*'
 $ ansible wpl-dev5-adminpor1.wpl.domain1 -i ./hosts/application/dev/application_dev_all.ini -m setup -a 'filter=ansible_eth[0-2]'
 $ ansible wpl-dev5-adminpor1.wpl.domain1 -i ./hosts/application/dev/application_dev_all.ini -m setup -a 'filter=ansible_os_family'
-$ ansible all -i hosts/application/prod/application_production_all.ini -m setup -a 'filter=ansible_distribution_version' -e 'gather_facts=True' --limit 'project.com-dev,project.com-tst,project.com-stg,project.com-perf,project.com-prod,project.be-tst,project.be-stg,project.be-prod,mars-tst,mars-tst2,mars-stg,mars-stg2,mars-prod-wpl2,mars-prod-wpl3,mars-perf-wpl3,mars-perf-wpl2,moonraker-tst,moonraker-stg,moonraker-perf,moonraker-prod-account3,moonraker-prod-hub-migration,acekingdom-tst,acekingdom-stg,acekingdom-prod'
-# show OS version for all wpl3 lb envs
-$ ansible all -i hosts/application/prod/application_production_all.ini -m setup -a 'filter=ansible_distribution_version' -e 'gather_facts=True' --limit 'mars-tst2,mars-stg2,mars-prod-wpl3,mars-perf-wpl3,moonraker-tst,moonraker-stg,moonraker-perf,moonraker-prod-account3,moonraker-prod-hub-migration,acekingdom-tst,acekingdom-stg,acekingdom-prod'
-# grep all lb vms with Centos 5
-$ ansible all -i hosts/application/prod/application_production_all.ini -m setup -a 'filter=ansible_distribution_version' -e 'gather_facts=True' --limit 'mars-tst2,mars-stg2,mars-prod-wpl3,mars-perf-wpl3,moonraker-tst,moonraker-stg,moonraker-perf,moonraker-prod-account3,moonraker-prod-hub-migration,acekingdom-tst,acekingdom-stg,acekingdom-prod' | grep "5" -B2 | grep "\"5" -B2
+$ ansible all -i hosts/application/prod/application_production_all.ini -m setup -a 'filter=ansible_distribution_version' -e 'gather_facts=True' --limit 'project.com-dev,project.com-tst,project.com-stg,project.com-perf,project.com-prod,project.be-tst,project.be-stg,project.be-prod,prj3-tst,prj3-tst2,prj3-stg,prj3-stg2,prj3-prod-wpl2,prj3-prod-wpl3,prj3-perf-wpl3,prj3-perf-wpl2,prj2-tst,prj2-stg,prj2-perf,prj2-prod-prj4,prj2-prod-hub-migration,prj5-tst,prj5-stg,prj5-prod'
+# show OS version for all wpl3 pr1 envs
+$ ansible all -i hosts/application/prod/application_production_all.ini -m setup -a 'filter=ansible_distribution_version' -e 'gather_facts=True' --limit 'prj3-tst2,prj3-stg2,prj3-prod-wpl3,prj3-perf-wpl3,prj2-tst,prj2-stg,prj2-perf,prj2-prod-prj4,prj2-prod-hub-migration,prj5-tst,prj5-stg,prj5-prod'
+# grep all prj2 vms with Centos 5
+$ ansible all -i hosts/application/prod/application_production_all.ini -m setup -a 'filter=ansible_distribution_version' -e 'gather_facts=True' --limit 'prj3-tst2,prj3-stg2,prj3-prod-wpl3,prj3-perf-wpl3,prj2-tst,prj2-stg,prj2-perf,prj2-prod-prj4,prj2-prod-hub-migration,prj5-tst,prj5-stg,prj5-prod' | grep "5" -B2 | grep "\"5" -B2
 ~~~
 
 * Dry-run + check diffs
@@ -116,20 +116,20 @@ $ sudo yum downgrade ansible.noarch
 
 * push log4j.xml
 ~~~bash
-$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=['lbfperf-wpllbv-privil-adminpor-01.lbfra.domain1','lbfperf-wpllbv-pub-por-01.lbfra.domain1','lbfperf-wpllbv-pub-por-02.lbfra.domain1','lbfperf-wpllbv-pub-por-03.lbfra.domain1','lbfperf-wpllbv-pub-por-04.lbfra.domain1','lbfperf-wpllbv-pub-por-05.lbfra.domain1','lbfperf-wpllbv-pub-por-06.lbfra.domain1','lbfperf-wpllbv-pub-por-07.lbfra.domain1','lbfperf-wpllbv-pub-por-08.lbfra.domain1','lbfperf-wpllbv-pub-por-09.lbfra.domain1','lbfperf-wpllbv-pub-por-10.lbfra.domain1'] log4j_file=present" -t "push_configs"
-$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=['lbfperf-wpllbv-pub-por-01.lbfra.domain1'] log4j_file=present" -t "push_configs,start_application"
+$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=['host1', 'host2'] log4j_file=present" -t "push_configs"
+$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=['host1', 'host2'] log4j_file=present" -t "push_configs,start_application"
 ~~~
 
 * push configs and restart vms in certain groups
 ~~~bash
-$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=application-prod-nw" -t "push_configs,start_application" --limit mars-tst2,moonraker-tst,moonraker-stg,moonraker-perf  --list-hosts
-$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=application-prod-nw" -t "push_configs,start_application" --limit mars-tst2,moonraker-tst,moonraker-stg,moonraker-perf
+$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=application-prod-nw" -t "push_configs,start_application" --limit prj3-tst2,prj2-tst,prj2-stg,prj2-perf  --list-hosts
+$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=application-prod-nw" -t "push_configs,start_application" --limit prj3-tst2,prj2-tst,prj2-stg,prj2-perf
 ~~~
 
 ## Produce configs for third-parties
 ~~~bash
 $ mkdir -p /opt/local/tmp
-$ ansible-playbook -i hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=all" -t "produce_configs" --limit lbfstg-wpl3lbvgsstg-privil-admin-01.lbfra.domain1
+$ ansible-playbook -i hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e "hosti=all" -t "produce_configs" --limit host1
 ~~~
 
 -D maybe shows diff between files
@@ -138,8 +138,8 @@ $ ansible-playbook -i hosts/application/prod/application_production_all.ini appl
 * add middleware setup role
 Install jdk8.60
 ~~~bash
-$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_middleware_setup.yml -e "hosti=['lbftest-wpl3projectvegastest-privil-admin-01.lbfra.domain1','lbftest-wpl3projectvegastest-pub-por-01.lbfra.domain1','lbftest-wpl3projectvegastest-pub-por-02.lbfra.pte']"
-$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_middleware_setup.yml -e "hosti=moonraker-stg"
+$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_middleware_setup.yml -e "hosti=['host1', 'host2']"
+$ ansible-playbook -i ./hosts/application/prod/application_production_all.ini application_middleware_setup.yml -e "hosti=prj2-stg"
 ~~~
 * enable fact gathering
 * setup eth0 ip in wpl.boot.conf from facts
@@ -157,12 +157,12 @@ ansible-playbook -i hosts/application/prod/application_production_all.ini applic
 
 * Get vms list without new lines
 ~~~bash
-$ grep "moonraker-" /home/antonku/Documents/pycharm-prjs/automatization/ansible-env-provision/hosts/application/prod/application_production_all.ini |grep -v "\[" | sed -e "s/^/\'/g" -e "s/$/\',/g" | tr -d '\n'
+$ grep "prj2-" /home/antonku/Documents/pycharm-prjs/automatization/ansible-env-provision/hosts/application/prod/application_production_all.ini |grep -v "\[" | sed -e "s/^/\'/g" -e "s/$/\',/g" | tr -d '\n'
 ~~~
 
 
 # On old Centos 5 where python2.4 is installed just do (files are available on ifra gw),deps are: <br/>
-ssh loc1gw-01.uaprod.domain1:/home/antonku/python_inst
+ssh loc1gw.domain1:/home/antonku/python_inst
 libffi-3.0.5-1.el5.x86_64.rpm <br/>
 python26-2.6.8-2.el5.x86_64.rpm <br/>
 python26-libs-2.6.8-2.el5.x86_64.rpm <br/>
