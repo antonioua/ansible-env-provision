@@ -1,0 +1,19 @@
+---
+
+
+# protect this playbook from running without tag specified
+
+- fail: msg="The system cannot be provisioned while tags are not specified"
+
+
+- name: Running bootstrap actions
+  include: bootstrap.yml
+
+
+- include: send_db_monitor_by_oleksander.yml
+
+
+- include: send_phantomjs_libs.yml
+
+
+- include: send_jmx.yml

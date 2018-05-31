@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.security.AuthorizationMatrixProperty>
+      <permission>hudson.model.Item.Read:name.LB</permission>
+      <permission>hudson.model.Item.Discover:name.LB</permission>
+      <permission>hudson.model.Item.Build:name.LB</permission>
+      <permission>hudson.model.Item.Cancel:name.LB</permission>
+      <permission>hudson.model.Item.Workspace:name.LB</permission>
+    </hudson.security.AuthorizationMatrixProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>50</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@1.25">
+      <autoRebuild>false</autoRebuild>
+      <rebuildDisabled>false</rebuildDisabled>
+    </com.sonyericsson.rebuild.RebuildSettings>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <org.biouno.unochoice.ChoiceParameter plugin="uno-choice@1.1">
+          <name>BRAND</name>
+          <description></description>
+          <randomName>choice-parameter-5787930927592374</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>import groovy.json.JsonSlurper
+def command = &quot;/jobs/Deploy-scripts/workspace/applicationctl list-brands&quot;
+def proc = command.execute()
+proc.waitFor()
+return new JsonSlurper().parseText(proc.text)</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>true</filterable>
+        </org.biouno.unochoice.ChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>ENVIRONMENT</name>
+          <description></description>
+          <randomName>choice-parameter-5787930929306536</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>import groovy.json.JsonSlurper
+def environments = []
+def command = &quot;/jobs/Deploy-scripts/workspace/applicationctl list-environments -l ${BRAND}&quot;
+def proc = command.execute()
+proc.waitFor()
+environments = new JsonSlurper().parseText(proc.text)
+res = []
+res.add(&quot;! Please select an environment&quot;)
+for (i in environments) {
+    res.add(i)
+}
+return res</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>BRAND</referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>TARGET_NODE</name>
+          <description></description>
+          <randomName>choice-parameter-5787930930731828</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>import groovy.json.JsonSlurper
+def command = &quot;/jobs/Deploy-scripts/workspace/applicationctl list-vms -l ${BRAND} -e ${ENVIRONMENT}&quot;
+def proc = command.execute()
+proc.waitFor()
+nodes = new JsonSlurper().parseText(proc.text)
+return nodes</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>BRAND,ENVIRONMENT</referencedParameters>
+          <choiceType>PT_CHECKBOX</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>HOST_FILE</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>hosts/application/dev/application_dev_all.ini</string>
+              <string>hosts/application/prod/application_production_all.ini</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>PLAYBOOK</name>
+          <description></description>
+          <randomName>choice-parameter-5787930988240176</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>return [
+&quot;application_configure_application_node.yml&quot;,
+&quot;application_send_stuff_to_application_node.yml&quot;,
+&quot;zabbix_install_agent.yml&quot;
+]</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters></referencedParameters>
+          <choiceType>PT_RADIO</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>TAGS</name>
+          <description></description>
+          <randomName>choice-parameter-5787930989618257</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>if (PLAYBOOK == &quot;application_configure_application_node.yml&quot;) {
+return [
+&quot;bootstrap&quot;,
+&quot;push_all&quot;,
+&quot;start_application&quot;,
+&quot;sweep_up&quot;
+]
+} else if (PLAYBOOK == &quot;application_send_stuff_to_application_node.yml&quot;) {
+return [
+&quot;bootstrap&quot;,
+&quot;send_jmx&quot;,
+&quot;send_columbo&quot;,
+&quot;send_phantomjs_libs&quot;
+]
+} else if (PLAYBOOK  == &quot;zabbix_install_agent.yml&quot;) {
+return [
+&quot;bootstrap&quot;,
+&quot;install_zabbix&quot;,
+&quot;disable_zabbix&quot;
+]
+}</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters>PLAYBOOK</referencedParameters>
+          <choiceType>PT_CHECKBOX</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+        <org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition plugin="nodelabelparameter@1.5.1">
+          <name>NODE</name>
+          <description></description>
+          <allowedSlaves>
+            <string>master</string>
+            <string>location1-department-ci01.domain1.product</string>
+          </allowedSlaves>
+          <defaultSlaves>
+            <string>master</string>
+          </defaultSlaves>
+          <triggerIfResult>multiSelectionDisallowed</triggerIfResult>
+          <allowMultiNodeSelection>false</allowMultiNodeSelection>
+          <triggerConcurrentBuilds>false</triggerConcurrentBuilds>
+          <ignoreOfflineNodes>false</ignoreOfflineNodes>
+          <nodeEligibility class="org.jvnet.jenkins.plugins.nodelabelparameter.node.AllNodeEligibility"/>
+        </org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition>
+        <org.biouno.unochoice.CascadeChoiceParameter plugin="uno-choice@1.1">
+          <name>BRANCH_NAME</name>
+          <description></description>
+          <randomName>choice-parameter-5787931002713671</randomName>
+          <script class="org.biouno.unochoice.model.GroovyScript">
+            <script>def t1 = []
+def SCM_PATH=&quot;git@gitlab.domain1.product:po/ansible-env-provision.git&quot;
+def REF=&quot;branch&quot;
+if (REF.equals(&quot;branch&quot;)) {
+    command = &quot;git ls-remote -h  ${SCM_PATH}&quot;
+} else if (REF.equals(&quot;tag&quot;)) {
+    command = &quot;git ls-remote -t  ${SCM_PATH}&quot;
+    t1 = [&apos;! Please select a tag&apos;]
+}
+proc = command.execute()
+proc.waitFor()
+def heads = []
+proc.text.eachLine {heads.add(it)}
+for(i in heads) {
+    t1.add(i.split()[1].replaceAll(&apos;\\^\\{\\}&apos;, &apos;&apos;).replaceAll(&apos;refs/heads/&apos;, &apos;&apos;))
+}
+t1 = t1.unique().sort()
+t2 = []
+t2.add(&quot;master&quot;)
+for(i in t1){
+   t2.add(i)
+}
+
+return t2</script>
+            <fallbackScript></fallbackScript>
+          </script>
+          <visibleItemCount>1</visibleItemCount>
+          <parameters class="linked-hash-map"/>
+          <referencedParameters></referencedParameters>
+          <choiceType>PT_SINGLE_SELECT</choiceType>
+          <filterable>false</filterable>
+        </org.biouno.unochoice.CascadeChoiceParameter>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.2">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>git@gitlab.domain1.product:po/ansible-env-provision.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/${BRANCH_NAME}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(System)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.plugins.descriptionsetter.DescriptionSetterBuilder plugin="description-setter@1.10">
+      <regexp></regexp>
+      <description>${BRAND} ${ENVIRONMENT}</description>
+    </hudson.plugins.descriptionsetter.DescriptionSetterBuilder>
+    <hudson.tasks.Shell>
+      <command>if [[ ${TARGET_NODE} == &quot;&quot; ]]; then
+    echo -e &quot;TARGET_NODE is empty&quot;
+    chmod 0600 hosts/ssh_keys/*
+    exit 1
+fi
+
+
+
+chmod 0600 hosts/ssh_keys/*
+TARGET_NODE=$(echo &quot;${TARGET_NODE}&quot; | sed -e &quot;s/^/[&apos;/&quot; -e &quot;s/$/&apos;]/&quot; -e &quot;s/,/&apos;,&apos;/g&quot;)
+echo -e &quot;${TARGET_NODE}&quot;
+export ANSIBLE_FORCE_COLOR=true
+ansible-playbook -i ${HOST_FILE} ${PLAYBOOK} -e &quot;hosti=${TARGET_NODE}&quot; -t &quot;${TAGS}&quot;</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.4.2">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
+</project>

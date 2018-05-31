@@ -1,0 +1,10 @@
+---
+
+
+- name: generating apps's .bashrc for wpl3_sbt_v3
+  template: src=../../templates/wpl3_sbt_v3/apps_bashrc.j2
+            dest=/111//.bashrc
+            owner=apps
+            group=java
+            mode=0644
+  tags: ["push_all", "push_apps_bashrc"]

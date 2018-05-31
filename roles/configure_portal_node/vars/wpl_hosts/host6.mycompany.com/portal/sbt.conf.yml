@@ -1,0 +1,7 @@
+wpl3_sbt_conf:
+
+  #[scala]
+  scala_version: auto
+
+  #[server]
+  lock: ${user.home}/product-data/package/.wpl.properties

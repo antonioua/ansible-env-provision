@@ -1,0 +1,6 @@
+---
+
+
+- name: restarting application
+  shell: "su - apps -c 'pgrep java | xargs kill -9 && echo application has been stopped || echo Stopping error; rm -rf ~/.app/boot ; rm -rf ~/product-data/package/.wpl.properties*; java -jar /111//product-data/package/launcher.jar --locate @/111//product-data/conf/sbt.conf'"
+  tags: ["start_application"]

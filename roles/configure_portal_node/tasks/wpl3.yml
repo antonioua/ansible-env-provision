@@ -1,0 +1,13 @@
+---
+
+
+- include: wpl3/application_push_apps_bashrc.yml
+
+
+- include: wpl3/application_push_configs.yml
+
+
+- include: wpl3/application_push_cluster_workaround_script.yml
+
+
+- include: wpl3/application_restart_tomcat.yml

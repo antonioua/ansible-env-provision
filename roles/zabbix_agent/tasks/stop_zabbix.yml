@@ -1,0 +1,9 @@
+---
+
+
+- name: stopping zabbix agent and disabling service start
+  service:
+    name={{ zabbix_agent_service_name }}
+    state=stopped
+    enabled=no
+  tags: ["stop_zabbix"]

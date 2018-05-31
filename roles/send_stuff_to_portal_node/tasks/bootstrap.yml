@@ -1,0 +1,7 @@
+---
+
+
+# Bootstrap a legacy python 2.4 host, it istalls python-simplejson package directly via ssh/bash cmd
+- name: install python-simplejson
+  raw:  yum -y install python-simplejson
+  tags: ["bootstrap"]

@@ -1,0 +1,1 @@
+/usr/lib64/nagios/plugins/check_nrpe -H 127.0.0.1 -c application_checks -p 5001 -a curl_check tickers.product.com/jpdata/datalink/mrj-4.xml 80

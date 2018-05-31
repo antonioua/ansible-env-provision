@@ -1,0 +1,17 @@
+---
+
+
+- name: ensure backup dir is created
+  file:
+    path={{ wpl_backup_dir }}
+    state=directory
+    owner=apps
+    group=java
+    mode=0755
+  when: current_obj.backup_file is defined
+
+
+- name: backup config
+  shell: mv {{item}} {{ wpl_backup_dir }}/{{item | basename }} && chown apps:java {{ wpl_backup_dir }}/{{item | basename }}
+  with_items: "{{ current_obj.backup_file }}"
+  when: current_obj.backup_file is defined

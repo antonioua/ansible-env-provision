@@ -1,0 +1,8 @@
+*.idea
+.idea/
+application_produce_configs_for_3dparties/
+tmp-retrived-files/
+hosts/application/local/*
+deprecated_files/
+
+*.retry

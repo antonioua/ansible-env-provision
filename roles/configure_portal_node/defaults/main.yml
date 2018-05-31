@@ -1,0 +1,7 @@
+---
+
+wpl_backup_dir: "/111//product-data/conf/config_backups"
+jmxremote_port: 8888
+jmxremote_rmi_port: 8888
+
+delayed_start_script: "false"

@@ -1,0 +1,74 @@
+---
+
+
+# build.properties
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_build_prp_conf"]
+
+
+- name: including build.properties.yml variables for wpl3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/build.properties.yml
+  tags: ["push_all", "push_configs", "push_build_prp_conf"]
+
+
+- name: generating build.properties
+  template:
+    src=../../templates/wpl3/build.properties.j2
+    dest=/111//product-data/conf/current/build.properties
+    owner=apps
+    group=java
+    mode=0755
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_build_prp_conf"]
+
+
+# application-ext.properties
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_application_ext_prp_conf"]
+
+
+- name: including application-ext.properties.yml variables for wpl3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/application-ext.properties.yml
+  tags: ["push_all", "push_configs", "push_application_ext_prp_conf"]
+
+
+- name: generating application-ext.properties
+  template:
+    src=../../templates/wpl3/application-ext.properties.j2
+    dest=/111//product-data/conf/current/app-application-6.1.1-ce-ga2/application-ext.properties
+    owner=apps
+    group=java
+    mode=0755
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_application_ext_prp_conf"]
+
+
+# trus.keystore
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_keystore", "push_trust_keystore"]
+
+
+- name: pushing jks_t.keystore
+  copy:
+    src=../../files/application/wpl3/keystore/jks_t.keystore
+    dest=/111//product-data/conf/current/keys/jks_t.keystore
+    owner=apps
+    group=java
+    mode=0640
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_keystore", "push_trust_keystore"]

@@ -1,0 +1,11 @@
+---
+- hosts: "{{ hosti }}"
+
+  gather_facts: False
+  sudo: True
+
+  vars:
+    wpl_version: Null
+
+  roles:
+    - jdk

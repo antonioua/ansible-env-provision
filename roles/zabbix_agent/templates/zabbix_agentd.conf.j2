@@ -1,0 +1,12 @@
+PidFile={{ PidFile }}
+LogFile={{ LogFile }}
+AllowRoot={{ AllowRoot }}
+Server={{ Server }}
+ServerActive={{ ServerActive }}
+Hostname={{ Hostname }}
+ListenPort={{ ListenPort }}
+EnableRemoteCommands={{ EnableRemoteCommands }}
+LogRemoteCommands={{ LogRemoteCommands }}
+Include={{ Include }}
+UserParameter=netstat.ntep[*],netstat -ntep | grep '$1' | wc -l
+HostMetadata={{ wpl_version }} {{ application_node_type }}

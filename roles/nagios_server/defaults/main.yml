@@ -1,0 +1,3 @@
+---
+nagios_server_package: nagios
+nagios_server_service: nagios

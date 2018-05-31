@@ -1,0 +1,47 @@
+wpl3_sbt_java_args: |
+  -XX:MaxMetaspaceSize=512m
+  -XX:MetaspaceSize=512m
+  -XX:+CMSClassUnloadingEnabled
+  -Xms5120m
+  -Xmx5120m
+  -Djava.net.preferIPv4Stack=true
+  -Djava.awt.headless=true
+  -XX:+HeapDumpOnOutOfMemoryError
+  -XX:NewRatio=1
+  -XX:+UseConcMarkSweepGC
+  -XX:+UseParNewGC
+  -XX:+CMSParallelRemarkEnabled
+  -XX:SurvivorRatio=6
+  -XX:+DisableExplicitGC
+  -XX:+CMSClassUnloadingEnabled
+  -XX:+UseNUMA
+  -XX:+AlwaysActAsServerClassMachine
+  -XX:+AggressiveOpts
+  -XX:+BackgroundCompilation
+  -XX:+AlwaysPreTouch
+  -XX:+ParallelRefProcEnabled
+  -XX:+CMSIncrementalMode
+  -XX:+CMSIncrementalPacing
+  -XX:MaxTenuringThreshold=9
+  -XX:ReservedCodeCacheSize=128m
+  -XX:InitialCodeCacheSize=128m
+  -Dfile.encoding=UTF8
+  -Duser.timezone=Europe/Istanbul
+  -Dwebapps.dir=/111//product-data/package/webapps
+  -noverify
+  -Dconfig.file=/111//product-data/conf/app.conf
+  -Djava.io.tmpdir=/opt/local/tmp
+
+wpl3_sbt_jmx_args: |
+  -Dcom.sun.management.jmxremote
+  -Dcom.sun.management.jmxremote.port={{ jmxremote_port }}
+  -Dcom.sun.management.jmxremote.rmi.port={{ jmxremote_rmi_port }}
+  -Dcom.sun.management.jmxremote.local.only=false
+  -Dcom.sun.management.jmxremote.authenticate=false
+  -Dcom.sun.management.jmxremote.ssl=false
+
+wpl3_sbt_jgroups_args: |
+  -Djgroups.bind_addr=1.1.1.1
+  -Djgroups.ttl=1
+  -Djgroups.udp.mcast_addr=228.8.8.8
+  -Djgroups.udp.mcast_port=48001

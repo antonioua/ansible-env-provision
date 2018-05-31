@@ -1,0 +1,53 @@
+---
+
+
+# protect this playbook from running without tag specified
+
+- fail: msg="The system cannot be provisioned while tag is not specified"
+
+
+- name: Running bootstrap actions
+  include: bootstrap.yml
+
+
+- name: Including node's variables for zabbix agent
+  include_vars: "{{ item }}"
+  with_first_found:
+  - "../../configure_application_node/vars/wpl_hosts/{{ inventory_hostname }}/node_config.yml"
+  - "../../configure_application_node/vars/wpl_hosts/default/node_config.yml"
+  tags: ["install_zabbix"]
+
+
+- name: Including OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags: ["install_zabbix"]
+
+
+- name: Including architecture specific variables
+  include_vars: "{{ ansible_os_family }}-{{ ansible_architecture }}.yml"
+  tags: ["install_zabbix"]
+
+
+- include: "packages-RedHat.yml"
+  when: " ansible_os_family == 'RedHat' "
+  tags: ["install_zabbix"]
+
+
+- name: Prepare zabbix config
+  template: >
+    src="zabbix_agentd.conf.j2"
+    dest="{{ zabbix_agent_conf_dir }}/zabbix_agentd.conf"
+    owner=root group=root mode=0644
+  notify: restart zabbix agent
+  tags: ["install_zabbix"]
+
+
+- name: Ensure zabbix service is enabled
+  service:
+    name={{ zabbix_agent_service_name }}
+    enabled=yes
+    state=started
+  tags: ["install_zabbix"]
+
+
+- include: stop_zabbix.yml

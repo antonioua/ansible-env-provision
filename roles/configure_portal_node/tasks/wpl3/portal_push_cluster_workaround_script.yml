@@ -1,0 +1,38 @@
+---
+
+
+- name: check centos version (cluster workaround check)
+  shell: cat /etc/redhat-release | grep -o '[0-9]\.[0-9]' | cut -f1 -d'.'
+  register: centos_version
+  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+  when: "(public_nodes_fe_ips is defined) and
+        (application_node_type == 'admin')"
+
+
+- name: generating application_clear_cache.py
+  template:
+    src=../../templates/wpl3/application_clear_cache.py.j2
+    dest=/111//application_clear_cache.py
+    owner=apps
+    group=java
+    mode=0755
+    backup=no
+  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+  when: "(public_nodes_fe_ips is defined) and
+        (application_node_type == 'admin')"
+
+
+#- name: installing requests lib for python script application_clear_cache.py on Centos7
+#  yum:
+#    name=python-requests-oauthlib
+#    state=present
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+#  when: '( centos_version.stdout == "7") and (public_nodes_fe_ips is defined)'
+
+
+#- name: installing requests lib for python script application_clear_cache.py on Centos5
+#  yum:
+#    name=python26-requests
+#    state=present
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+#  when: '( centos_version.stdout == "5") and (public_nodes_fe_ips is defined)'

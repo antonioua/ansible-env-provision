@@ -1,0 +1,70 @@
+---
+
+
+# create local dir
+
+- name: creating local dir to save configs there
+  file:
+    path=./application_produce_configs_for_3dparties
+    state=directory
+  delegate_to: localhost
+  tags: ["produce_configs", "produce_app_conf", "produce_sbt_conf", "produce_boot_conf", "produce_keystore"]
+
+
+# app.conf
+
+- name: including app.conf.yml variables for wpl3_sbt_v3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/app.conf.yml
+  tags: ["produce_configs", "produce_app_conf"]
+
+
+- name: producing app.conf
+  template:
+    src=../../templates/wpl3_sbt_v3/app.conf.j2
+    dest=./application_produce_configs_for_3dparties/app.conf
+    backup=no
+  delegate_to: localhost
+  tags: ["produce_configs", "produce_app_conf"]
+
+
+# sbt.conf
+
+- name: including sbt.conf.yml variables for wpl3_sbt_v3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/sbt.conf.yml
+  tags: ["produce_configs", "produce_sbt_conf"]
+
+
+- name: producing sbt.conf
+  template:
+    src=../../templates/wpl3_sbt_v3/sbt.conf.j2
+    dest=./application_produce_configs_for_3dparties/sbt.conf
+    backup=no
+  delegate_to: localhost
+  tags: ["produce_configs", "produce_sbt_conf"]
+
+
+# wpl.boot.properties
+
+- name: including wpl.boot.properties.yml variables for wpl3_sbt_v3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/wpl.boot.properties.yml
+  tags: ["produce_configs", "produce_boot_conf"]
+
+
+- name: producing wpl.boot.properties
+  template:
+    src=../../templates/wpl3_sbt_v3/wpl.boot.properties.j2
+    dest=./application_produce_configs_for_3dparties/wpl.boot.properties
+    backup=no
+  delegate_to: localhost
+  tags: ["produce_configs", "produce_boot_conf"]
+
+
+# trus.keystore
+
+- name: producing jks_t.keystore
+  copy:
+    src=../../files/application/wpl3/keystore/jks_t.keystore
+    dest=./application_produce_configs_for_3dparties/jks_t.keystore
+    backup=no
+  delegate_to: localhost
+  tags: ["produce_configs", "produce_keystore"]

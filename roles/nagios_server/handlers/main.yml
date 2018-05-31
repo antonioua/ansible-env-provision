@@ -1,0 +1,6 @@
+---
+- name: restart nagios server
+  service: name=nagios state=restarted
+
+- name: reload nagios server
+  service: name=nagios state=reloaded

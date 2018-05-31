@@ -1,0 +1,105 @@
+---
+# sudo tar xvzf /provisioning/files/jdk-8u91-linux-x64.tar.gz -C /opt/
+# http://repos.devinfra.domain1/Infra/System/7/pt_infra_jdk-1.8.60-0001.x86_64.rpm
+# http://repos.infra.domain1/Infra/System/7/pt_infra_jdk-1.8.60-0001.x86_64.rpm
+
+
+
+
+#!!! http://location1-department-nexus01.domain1.product/nexus/content/sites/mws-stuff/jdk-8u60-linux-x64.tar.gz
+
+- name: Fetch JDK version
+  shell: "/opt/jdk_current/bin/java -version 2>&1 | grep version | awk '{ print $3 }' | sed 's/\"//'g"
+  register: jdk_version
+
+
+- debug: msg="JDK_VERSION is {{jdk_version}}" verbosity=4
+#- debug: msg={{ jdk_version.stdout }}
+
+
+# way 1
+#- unarchive:
+#    src="{{jdk_file[0]}}"
+#    dest=/opt/
+#    copy=no
+#  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+# BEGIN way 2
+- name: downloading jdk and checking sha256sum
+  get_url:
+    url="{{jdk_repo}}/{{jdk_file}}"
+    dest=/opt/
+    force=no
+    sha256sum="ebe51554d2f6c617a4ae8fc9a8742276e65af01bd273e96848b262b3c05424e5"
+    #checksum="sha256:ebe51554d2f6c617a4ae8fc9a8742276e65af01bd273e96848b262b3c05424e5" (added in 2.0)
+  register: new_jdk_archive
+  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+- name: Unarchiving jdk
+  unarchive:
+    src=/opt/{{jdk_file}}
+    dest=/opt/
+    copy=no
+  when: ' "{{jdk_version.stdout}}" == "" '
+  # and "{{new_jdk_archive}}|changed"
+# END way 2
+
+
+# sudo ln -s /opt/jdk1.8.0_91 /opt/jdk_current
+- file:
+    src=/opt/jdk1.8.0_60
+    dest=/opt/jdk_current
+    state=link
+  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+- name: Register JAVA_HOME in .bash_profile
+  lineinfile:
+    dest="/111//.bash_profile"
+    regexp='^JAVA_HOME='
+    state=present
+    line="JAVA_HOME=/opt/jdk_current"
+  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+- name: Register PATH in .bash_profile
+  lineinfile:
+    dest="/111//.bash_profile"
+    regexp='^PATH='
+    state=present
+    line="PATH=$PATH:$HOME/.local/bin:$HOME/bin:$JAVA_HOME/bin:$ANT_HOME/bin:$GRADLE_HOME/bin"
+  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+- name: Declare export of JAVA_HOME
+  lineinfile:
+    dest="/111//.bash_profile"
+    regexp='^export JAVA_HOME$'
+    state=present
+    line="export JAVA_HOME"
+  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+- name: Declare export of PATH
+  lineinfile:
+    dest="/111//.bash_profile"
+    regexp='^export PATH$'
+    state=present
+    line="export PATH"
+  when: ' "{{jdk_version.stdout}}" == "" '
+
+
+- name: Fetch JDK version after installation
+  shell: "/opt/jdk_current/bin/java -version 2>&1 | grep version | awk '{ print $3 }' | sed 's/\"//'g"
+  register: installed_jdk_version
+
+
+- debug: msg="JDK version = {{installed_jdk_version.stdout}}"
+
+
+# Fail playbook if jdk is not relevant
+- assert:
+    that:
+      - installed_jdk_version.stdout | version_compare('1.8.0_60', '=')

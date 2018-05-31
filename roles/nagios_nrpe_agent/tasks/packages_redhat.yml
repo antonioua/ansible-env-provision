@@ -1,0 +1,13 @@
+---
+# Nagios NRPE Agent fro RedHat OS's
+# The EPEL repo is required fro this package
+- name: Install Nagios NRPE Agent [RedHat]
+  yum: name=nrpe  state=present enablerepo="{{ nagios_nrpe_server_repo_redhat }}"
+
+
+# Nagios Plugins are alos required since they aren't instlled as part of the package above
+- name: Install Nagios NRPE Plugins [RedHat]
+  yum: name={{ item }} state=present enablerepo="{{ nagios_nrpe_server_repo_redhat }}"
+  with_items:
+    - nagios-plugins
+

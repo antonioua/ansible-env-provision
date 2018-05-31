@@ -1,0 +1,55 @@
+---
+
+
+- name: check centos version (for cluster workaround fix)
+  shell: cat /etc/redhat-release | grep -o '[0-9]\.[0-9]' | cut -f1 -d'.'
+  register: centos_version
+  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+  when: public_nodes_fe_ips is defined and application_node_type == 'admin'
+
+
+#- name: deb
+#  debug:
+#    msg: "{{centos_version}}"
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+
+
+#- name: f*cking hack for ansible 2.4
+#  set_fact:
+#    centos_version: "{{ centos_version | combine( { 'stdout': '1' } ) }}"
+#  when: centos_version.skipped
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+
+#- name: deb
+#  debug:
+#    msg: "{{centos_version}}"
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+
+
+- name: generating application_clear_cache.py
+  template:
+    src=../../templates/wpl2/application_clear_cache.py.j2
+    dest=/111//application_clear_cache.py
+    owner=apps
+    group=java
+    mode=0755
+    backup=no
+  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+  when: public_nodes_fe_ips is defined and application_node_type == 'admin'
+
+
+#- name: installing requests lib for python script application_clear_cache.py on Centos7
+#  yum:
+#    name=python-requests-oauthlib
+#    state=present
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+#  when: centos_version.stdout == "7" and public_nodes_fe_ips is defined and not centos_version|skipped
+
+
+#- name: installing requests lib for python script application_clear_cache.py on Centos5
+#  yum:
+#    name=python26-requests
+#    state=present
+#  tags: ["push_all", "push_configs", "push_application_clear_cache_script"]
+#  when: centos_version.stdout == "5" and public_nodes_fe_ips is defined and not centos_version|skipped
+

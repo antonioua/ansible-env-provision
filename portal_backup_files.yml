@@ -1,0 +1,8 @@
+---
+- hosts: "{{ hosti }}"
+
+  gather_facts: False
+  sudo: True
+
+  roles:
+    - application_backup_files

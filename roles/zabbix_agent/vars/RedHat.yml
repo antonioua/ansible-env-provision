@@ -1,0 +1,3 @@
+zabbix_agent_service_name: "zabbix-agent"
+zabbix_agent_conf_dir: "/etc/zabbix"
+zabbix_agent_confd_dir: "{{ zabbix_agent_conf_dir }}/zabbix_agentd.d/"

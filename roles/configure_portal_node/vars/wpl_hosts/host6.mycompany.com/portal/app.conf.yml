@@ -1,0 +1,30 @@
+wpl3_sbt_app_conf_server:
+
+  # app: this section is hardcoded in template but can be owerwritten here
+
+  # db
+  type: "mysql"
+  host: "host1"
+  name: "name"
+  user: "user"
+  password: "pass"
+
+  # tomcat: this section is hardcoded in template but can be owerwritten here
+
+  # javax.net.ssl: this section is hardcoded in template but can be owerwritten here
+
+
+wpl3_sbt_app_conf_wpl:
+
+  prp1: "value"
+
+
+wpl3_sbt_app_conf_https: |
+
+  prp2 = "value"
+  prp2 = "value"
+
+
+wpl3_sbt_app_conf_project_specific: |
+
+  prp3 = "value"

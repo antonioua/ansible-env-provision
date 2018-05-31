@@ -1,0 +1,32 @@
+---
+
+
+- name: creating stuff dir
+  file:
+    path=/111//stuff
+    state=directory
+    owner=apps
+    group=java
+    mode=0755
+  tags: ["send_columbo"]
+
+#- name: find
+#  find: ./files/*
+#  register: filees
+
+
+- name: adding columbo.jar
+  copy:
+    src=columbo/columbo.jar
+    dest=/111//stuff
+    owner=apps
+    group=java
+    mode=0640
+  tags: ["send_columbo"]
+
+#  shell: scp db-assistant-0.1.jar /111//stuff
+#  copy: src={{ filees }} dest=/111//stuff owner=apps group=java mode=0640
+
+# we can't use below as access from vms is closed to nexsu
+#- name: retrieving columbo.jar from nexus to application node
+#  get_url: url=http://location1-department-nexus01.domain1.product/nexus/content/sites/mws-stuff-repo/columbo.jar dest=/111//stuff owner=apps group=java mode=0640

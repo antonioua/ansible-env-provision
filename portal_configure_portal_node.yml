@@ -1,0 +1,12 @@
+---
+- hosts: "{{ hosti }}"
+
+  gather_facts: False
+  sudo: True
+
+  vars:
+    wpl_version: Null
+    log4j: Null
+
+  roles:
+    - configure_application_node

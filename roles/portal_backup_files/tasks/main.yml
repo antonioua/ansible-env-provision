@@ -1,0 +1,39 @@
+---
+
+
+- name: including bootstrap task
+  include: ../../configure_application_node/tasks/bootstrap.yml
+  tags: ["all", "bootstrap"]
+
+
+- name: backuping build.properties
+  shell: "/bin/cp /111//product-data/conf/current/build.properties /111//product-data/conf/current/build.properties_before_puppetrun"
+  tags: ["all", "backup_configs"]
+
+
+- name: backuping application-ext.properties
+  shell: "/bin/cp /111//product-data/conf/current/app-application-6.1.1-ce-ga2/application-ext.properties /111//product-data/conf/current/app-application-6.1.1-ce-ga2/application-ext.properties_before_puppetrun"
+  tags: ["all", "backup_configs"]
+
+
+- name: backuping jks_t.keystore
+  shell: "/bin/cp /111//product-data/conf/current/keys/jks_t.keystore /111//product-data/conf/current/keys/jks_t.keystore_before_puppetrun"
+  tags: ["all", "backup_configs"]
+
+
+- name: backuping key.keystore if such file exist
+  shell: "[ -f '/111//product-data/conf/current/keys/key.keystore' ] && /bin/cp /111//product-data/conf/current/keys/key.keystore /111//product-data/conf/current/keys/key.keystore_before_puppetrun; exit 0"
+  tags: ["all", "backup_configs"]
+
+
+- name: backuping jks_k.keystore if such exist
+  shell: "[ -f '/111//product-data/conf/current/keys/jks_k.keystore' ] && /bin/cp /111//product-data/conf/current/keys/jks_k.keystore /111//product-data/conf/current/keys/jks_k.keystore_before_puppetrun; exit 0"
+  tags: ["all", "backup_configs"]
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+---
+
+
+- name: sweeping java heap dumps
+  shell: "su - apps -c 'rm -f /111//*.hprof'"
+  tags: ["sweep_up"]
+
+
+- name: sweeping old application backup packages
+  shell: "su - apps -c 'rm -rf /111//product-data/package-old-*'"
+  tags: ["sweep_up"]

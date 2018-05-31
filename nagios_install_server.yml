@@ -1,0 +1,8 @@
+---
+- hosts: "{{ hosti }}"
+
+  gather_facts: True
+  sudo: True
+
+  roles:
+    - nagios_server

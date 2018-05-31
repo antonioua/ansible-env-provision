@@ -1,0 +1,59 @@
+---
+
+
+# protect this playbook from running without tag specified
+
+- fail: msg="The system cannot be provisioned while tag is not specified"
+
+
+# bootstrap task if tag -t "bootstrap" specified
+
+- name: Running bootstrap actions
+  include: bootstrap.yml
+
+
+# include global and per host vars - I would like do not specify all tags for each include_vars
+
+# would like to apply this once and not for each host
+#- name: Include gloabl vars
+#  include_vars: global.yml
+#  tags: ["push_all", "push_apps_bashrc", "push_configs", "push_app_conf", "push_sbt_conf", "push_boot_conf", "push_build_prp_conf", "push_application_ext_prp_conf", "start_application"]
+
+
+# apply per each host run
+- name: determine wpl version
+  include_vars: wpl_hosts/{{ inventory_hostname }}/node_config.yml
+  tags: ["push_all", "push_apps_bashrc", "push_configs", "push_app_conf", "push_sbt_conf", "push_boot_conf", "push_build_prp_conf", "push_application_ext_prp_conf", "start_application", "sweep_up", "produce_configs", "push_trust_keystore"]
+
+
+#- name: get the current time for a timestamp
+#  command: date +%Y-%m-%d_%H:%M:%S
+#  register: time
+#  tags: ["push_all", "push_configs", "push_app_conf", "push_sbt_conf", "push_boot_conf"]
+
+
+# include tasks depennds on wpl_version var - I would like to see not skipped but empty log for when statement
+
+- name: Running tasks for wpl2
+  include: wpl2.yml
+  when: wpl_version == 'wpl2'
+
+
+- name: Running tasks for wpl3
+  include: wpl3.yml
+  when: wpl_version == 'wpl3'
+
+
+- name: Running tasks for wpl3_sbt
+  include: wpl3_sbt.yml
+  when: wpl_version == 'wpl3_sbt'
+
+
+- name: Running tasks for wpl3_sbt_v2
+  include: wpl3_sbt_v2.yml
+  when: wpl_version == 'wpl3_sbt_v2'
+
+
+- name: Running tasks for wpl3_sbt_v3
+  include: wpl3_sbt_v3.yml
+  when: wpl_version == 'wpl3_sbt_v3'

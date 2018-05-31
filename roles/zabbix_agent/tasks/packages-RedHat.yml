@@ -1,0 +1,85 @@
+---
+
+
+- name: Setting OS-specific facts for Centos5 [RedHat]
+  set_fact:
+    zabbix_core_package_name: "zabbix-2.4.7-1.el5"
+    zabbix_agent_package_name: "zabbix-agent-2.4.7-1.el5"
+  when: " ansible_distribution == 'CentOS' and ansible_distribution_major_version == '5' "
+  tags: ["install_zabbix"]
+
+
+- name: Setting OS-specific facts for Centos7 [RedHat]
+  set_fact:
+    zabbix_core_package_name: "zabbix-2.4.7-1.el7"
+    zabbix_agent_package_name: "zabbix-agent-2.4.7-1.el7"
+  when: " ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7' "
+  tags: ["install_zabbix"]
+
+
+# Installing zabbix core package and checking before if it is already exist
+
+- name: Checking if package zabbix core is installed [RedHat]
+  shell: rpm -q {{ zabbix_core_package_name }} || true
+  register: zabbix_core_check
+  tags: ["install_zabbix"]
+
+
+- name: Copying zabbix core package to vm [RedHat]
+  copy: >
+    src="rpm/{{ zabbix_core_package_name }}.x86_64.rpm"
+    dest="{{ node_tmp_dir }}"
+    owner=root group=root mode=0755
+  when: zabbix_core_check.stdout.find('is not installed') != -1
+  tags: ["install_zabbix"]
+
+
+- name: Installing zabbix core pacakge [RedHat]
+  yum:
+    name="{{ node_tmp_dir }}/{{ zabbix_core_package_name }}.x86_64.rpm"
+    state=present
+    disable_gpg_check=yes
+  when: zabbix_core_check.stdout.find('is not installed') != -1
+  tags: ["install_zabbix"]
+
+
+- name: Removing zabbix core installation package from temp dir [RedHat]
+  file:
+    path={{ node_tmp_dir }}/{{ zabbix_core_package_name }}.x86_64.rpm
+    state=absent
+  when: zabbix_core_check.stdout.find('is not installed') != -1
+  tags: ["install_zabbix"]
+
+
+# Installing zabbix agent package and checking before if it is already exist
+
+- name: Checking if package zabbix agent is installed [RedHat]
+  shell: rpm -q {{ zabbix_agent_package_name }} || true
+  register: zabbix_agent_check
+  tags: ["install_zabbix"]
+
+
+- name: Copying zabbix agent package to vm [RedHat]
+  copy: >
+    src="rpm/{{ zabbix_agent_package_name }}.x86_64.rpm"
+    dest="{{ node_tmp_dir }}"
+    owner=root group=root mode=0755
+  when: zabbix_agent_check.stdout.find('is not installed') != -1
+  tags: ["install_zabbix"]
+
+
+- name: Installing zabbix agent pacakge [RedHat]
+  yum:
+    name="{{ node_tmp_dir }}/{{ zabbix_agent_package_name }}.x86_64.rpm"
+    state=present
+    disable_gpg_check=yes
+  when: zabbix_agent_check.stdout.find('is not installed') != -1
+  tags: ["install_zabbix"]
+
+
+- name: Removing zabbix agent installation package from temp dir [RedHat]
+  file:
+    path={{ node_tmp_dir }}/{{ zabbix_agent_package_name }}.x86_64.rpm
+    state=absent
+  when: zabbix_agent_check.stdout.find('is not installed') != -1
+  tags: ["install_zabbix"]

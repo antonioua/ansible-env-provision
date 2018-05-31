@@ -1,0 +1,149 @@
+---
+
+
+# app.conf
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_app_conf"]
+
+
+- name: including app.conf.yml variables for wpl3_sbt_v3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/app.conf.yml
+  tags: ["push_all", "push_configs", "push_app_conf"]
+
+
+- name: generating app.conf
+  template:
+    src=../../templates/wpl3_sbt_v3/app.conf.j2
+    dest=/111//product-data/conf/app.conf
+    owner=apps
+    group=java
+    mode=0755
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_app_conf"]
+
+
+#- debug:
+#    msg: "{{ current_obj.backup_file }}"
+#  tags: ["push_all", "push_configs", "push_app_conf"]
+
+
+# sbt.conf
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_sbt_conf"]
+
+
+- name: including sbt.conf.yml variables for wpl3_sbt_v3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/sbt.conf.yml
+  tags: ["push_all", "push_configs", "push_sbt_conf"]
+
+
+- name: generating sbt.conf
+  template:
+    src=../../templates/wpl3_sbt_v3/sbt.conf.j2
+    dest=/111//product-data/conf/sbt.conf
+    owner=apps
+    group=java
+    mode=0755
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_sbt_conf"]
+
+
+#- debug:
+#    msg: "{{ current_obj.backup_file }}"
+#  tags: ["push_all", "push_configs", "push_app_conf"]
+
+
+# wpl.boot.properties
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_boot_conf"]
+
+
+- name: including wpl.boot.properties.yml variables for wpl3_sbt_v3
+  include_vars: ../../vars/wpl_hosts/{{ inventory_hostname }}/application/wpl.boot.properties.yml
+  tags: ["push_all", "push_configs", "push_boot_conf"]
+
+
+- name: generating wpl.boot.properties
+  template:
+    src=../../templates/wpl3_sbt_v3/wpl.boot.properties.j2
+    dest=/111//product-data/conf/wpl.boot.properties
+    owner=apps
+    group=java
+    mode=0755
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_boot_conf"]
+
+
+# jks_t.keystore
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_keystore", "push_trust_keystore"]
+
+# remove it when middleware provissioning will be ready, this task should be done during middleware provisioning
+- name: creating dir  /111//product-data/conf/keys
+  file:
+    path=/111//product-data/conf/keys
+    state=directory
+    owner=root
+    group=java
+    mode=0750
+  tags: ["push_all", "push_configs", "push_keystore", "push_trust_keystore"]
+
+- name: pushing jks_t.keystore
+  copy:
+    src=../../files/application/wpl3/keystore/jks_t.keystore
+    dest=/111//product-data/conf/keys/jks_t.keystore
+    owner=apps
+    group=java
+    mode=0640
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_keystore", "push_trust_keystore"]
+
+
+# jks_k.keystore
+
+- meta: flush_handlers
+  tags: ["push_all", "push_configs", "push_keystore"]
+
+# remove it when middleware provissioning will be ready, this task should be done during middleware provisioning
+- name: creating dir  /111//product-data/conf/keys
+  file:
+    path=/111//product-data/conf/keys
+    state=directory
+    owner=root
+    group=java
+    mode=0750
+  tags: ["push_all", "push_configs", "push_keystore"]
+
+- name: pushing jks_t.keystore
+  copy:
+    src=../../files/application/wpl3/keystore/jks_k.keystore
+    dest=/111//product-data/conf/keys/jks_k.keystore
+    owner=apps
+    group=java
+    mode=0640
+    backup=yes
+  register: current_obj
+  notify:
+    - ensure backup dir is created
+    - backup config
+  tags: ["push_all", "push_configs", "push_keystore"]

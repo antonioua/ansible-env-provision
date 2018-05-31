@@ -1,0 +1,50 @@
+---
+- name: install nagios server
+  yum: name={{ nagios_server_package }} state=present enablerepo="{{ nagios_nrpe_server_repo_redhat }}"
+
+- name: create nagios.cfg
+  notify: restart nagios server
+  copy: >
+    src=nagios/nagios.cfg
+    dest=/etc/nagios/
+    owner=nagios
+    group=nagios
+    mode=0750
+
+- name: create cgi.cfg
+  notify: restart nagios server
+  copy: >
+    src=nagios/cgi.cfg
+    dest=/etc/nagios/
+    owner=nagios
+    group=nagios
+    mode=0750
+
+- name: create passwd
+  notify: restart nagios server
+  copy: >
+    src=nagios/passwd
+    dest=/etc/nagios/
+    owner=nagios
+    group=nagios
+    mode=0750
+
+- name: copy objects dit to remote
+  copy: >
+    src=nagios/objects
+    dest=/etc/nagios/
+    owner=nagios
+    group=nagios
+    mode=0751
+  notify: reload nagios server
+
+
+- name: restart of nagios server
+  service: name="{{ nagios_server_service }}" state=restarted
+
+
+# Ensure Nagios Server is running and will start at boot
+- name: Nagios Server is running
+  service: name="{{ nagios_server_service }}" state=started enabled=yes
+
+#mode=0640

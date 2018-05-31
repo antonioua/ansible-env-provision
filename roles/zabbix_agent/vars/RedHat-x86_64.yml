@@ -1,0 +1,10 @@
+PidFile: /var/run/zabbix/zabbix_agentd.pid
+LogFile: /var/log/zabbix/zabbix_agentd.log
+AllowRoot: 1
+Server: 1.1.1.1
+ServerActive: 1.1.1.1:4849
+Hostname: "{{ inventory_hostname }}"
+ListenPort: 4848
+EnableRemoteCommands: 1
+LogRemoteCommands: 1
+Include: "{{ zabbix_agent_confd_dir }}"

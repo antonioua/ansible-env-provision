@@ -1,0 +1,6 @@
+---
+
+
+- name: restarting application
+  shell: "su - apps -c 'cd ~/product-data/package; ant start-application'"
+  tags: ["start_application"]

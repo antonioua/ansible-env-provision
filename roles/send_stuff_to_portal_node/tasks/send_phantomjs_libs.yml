@@ -1,0 +1,29 @@
+---
+
+
+#- name: Set regex pattern for removing conflicted deps
+#  set_fact: pattern1="^(git\@github\.com\:|https?\:\/\/github.com\/)(.*)\/([^\.]+)(\.git)?$"
+#  tags: ["all", "send_phantomjs_libs"]
+
+
+# let's ensure that conflicted packages is not installed
+
+- name: removing conflicting packages
+  yum:
+    name: yeku
+    state: absent
+  #when: "'{{ inventory_hostname }}' | match('^(wpl-admin-alpha-src.country.domain1|wpl-core3-wpl-pub-por-.*country.domain1)$')"
+  tags: ["send_phantomjs_libs"]
+
+
+- name: installing required libs for phantomjs
+  yum:
+    name={{ item }}
+    state=present
+  with_items:
+    - fontconfig
+    - freetype
+    - freetype-devel
+    - fontconfig-devel
+    - libstdc++
+  tags: ["send_phantomjs_libs"]

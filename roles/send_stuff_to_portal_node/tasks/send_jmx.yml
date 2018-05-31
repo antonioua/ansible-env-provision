@@ -1,0 +1,8 @@
+---
+- name: creating stuff dir
+  file: path=/111//stuff state=directory owner=apps group=java mode=0755
+  tags: ["send_jmx"]
+
+- name: adding jmxterm-1.0-alpha-4-uber.jar
+  copy: src=application/jmxterm-1.0-alpha-4-uber.jar dest=/111//stuff owner=apps group=java mode=0640
+  tags: ["send_jmx"]

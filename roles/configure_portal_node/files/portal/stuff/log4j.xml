@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+
+  <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MMdd-HHmm:ss,SSS} %c{1} %m [%t]%n"/>
+    </layout>
+  </appender>
+
+  <appender name="SYSTEM_OUT_CONSOLE" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %c{1} %m [%t]%n"/>
+    </layout>
+  </appender>
+
+  <appender name="FILE_SYNC" class="org.apache.log4j.rolling.RollingFileAppender">
+    <!--<param name="File" value="${application.logs}/app.log"/>-->
+    <!--<param name="encoding" value="UTF-8"/>-->
+      <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+          <param name="FileNamePattern" value="${application.logs}/app.log.%i.gz" />
+          <param name="ActiveFileName" value="${application.logs}/app.log"/>
+      </rollingPolicy>
+      <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+          <param name="MaxFileSize" value="209715200" />
+      </triggeringPolicy>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %c{1} [%X{messageId}] [%X{username}] %m [%t]%n"/>
+    </layout>
+    <filter class="com.product.log4j.customfilters.CustomErrorListeningFilter">
+    </filter>
+  </appender>
+
+
+  <appender name="requestLogAppender" class="org.apache.log4j.AsyncAppender">
+    <param name="bufferSize" value="500"/>
+    <appender-ref ref="requestLogAppender_SYNC"/>
+  </appender>
+
+  <appender name="requestLogAppender_SYNC" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="${application.logs}/request.log"/>
+    <param name="encoding" value="UTF-8"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} [%X{sessionId}] [%X{requestId}] [%X{context}] %m [%t]%n"/>
+    </layout>
+  </appender>
+
+  <appender name="systemOutAppender" class="org.apache.log4j.AsyncAppender">
+    <param name="bufferSize" value="500"/>
+    <appender-ref ref="systemOutAppender_SYNC"/>
+  </appender>
+
+  <appender name="systemOutAppender_SYNC" class="org.apache.log4j.rolling.RollingFileAppender">
+    <!--<param name="File" value="${application.logs}/app.out"/>-->
+    <!--<param name="encoding" value="UTF-8"/>-->
+      <rollingPolicy class="org.apache.log4j.rolling.FixedWindowRollingPolicy">
+          <param name="FileNamePattern" value="${application.logs}/app.out.%i.gz" />
+          <param name="ActiveFileName" value="${application.logs}/app.out"/>
+      </rollingPolicy>
+      <triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+          <param name="MaxFileSize" value="209715200" />
+      </triggeringPolicy>
+      <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%m"/>
+    </layout>
+    <filter class="com.product.log4j.customfilters.CustomErrorListeningFilter"/>
+  </appender>
+
+  <appender name="umsLogAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="${application.logs}/ums.log"/>
+    <param name="encoding" value="UTF-8"/>
+    <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %c{1} [%X{messageId}] %m [%t]%n"/>
+    </layout>
+  </appender>
+
+	<appender name="SHMOXILogAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+		<param name="File" value="${application.logs}/SHMOXI.log"/>
+		<param name="encoding" value="UTF-8"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} [%c{1}] %m [%t]%n"/>
+		</layout>
+	</appender>
+
+  <appender name="openbetLogAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="${application.logs}/openbet.log"/>
+    <param name="encoding" value="UTF-8"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} [%c{1}] %m [%t]%n"/>
+    </layout>
+  </appender>
+
+  <appender name="vfLogAppender" class="org.apache.log4j.rolling.RollingFileAppender">
+    <param name="File" value="${application.logs}/vf.log"/>
+    <param name="encoding" value="UTF-8"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %c{1} [%X{messageId}] %m [%t]%n"/>
+    </layout>
+  </appender>
+
+  <appender name="auditLogAppender" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="${application.logs}/audit.log"/>
+		<param name="encoding" value="UTF-8"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %m%n"/>
+		</layout>
+  </appender>
+
+  <appender name="springDump" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${application.logs}/springDump.log"/>
+    <param name="encoding" value="UTF-8"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %c{1} [%X{messageId}] %m [%t]%n"/>
+    </layout>
+  </appender>
+
+  <!-- publishing logging start -->
+  <!-- publishing has many participants, so they all should be here -->
+  <appender name="PUBLISHING_FILE" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="File" value="${application.logs}/publishing.log"/>
+    <param name="encoding" value="UTF-8"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%p %d{MM.dd.yy HH:mm:ss,SSS} %c{1} [%X{messageId}] [%X{username}] %m [%t]%n"/>
+    </layout>
+  </appender>
+
+	<appender name="PUBLISHING_JDBC" class="com.product.launcher.log4j.jdbc.PlatformJDBCAppender">
+        <param name="URL" value="${app.ds.jndi.name}" />
+        <param name="driver" value="javax.naming.InitialContext" />
+
+		<param name="bufferSize" value="1"/>
+
+		<layout class="com.product.launcher.log4j.PlatformPatternLayout">
+			<param name="ConversionPattern" value="INSERT INTO LOGS (ID, APPENDER_NAME, DATED, LOGGER, LEVEL, MESSAGE, EXCEPTION)
+                      VALUES('%i','PUBLISHING','%d{yyyy.MM.dd HH:mm:ss}',' %c',' %p',' %m',' %e')"/>
+		</layout>
+	</appender>
+
+	<logger name="com.app.application.staging">
+    <level value="INFO"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+  <logger name="com.app.application.scheduler.job.PublishToRemoteJob">
+    <level value="DEBUG"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+  <logger name="com.app.application.scheduler.job.ImportFromRemoteJob">
+    <level value="DEBUG"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+
+	<logger name="com.app.application.staging.PublishProcessProgressMonitor">
+		<level value="DEBUG"/>
+		<appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+	</logger>
+  <logger name="com.app.application.messaging.LayoutsRemotePublisherMessageListener">
+    <level value="INFO"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+  <logger name="com.app.application.lar.productLayoutExporter">
+    <level value="DEBUG"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+  <logger name="com.app.application.lar.productapplicationLayoutImporter">
+    <level value="DEBUG"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+  <logger name="com.app.application.staging.service">
+    <level value="DEBUG"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+		<appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+
+  <logger name="com.app.application.cache.CombinedCacheUtil">
+    <level value="INFO"/>
+    <appender-ref ref="PUBLISHING_FILE" />
+    <appender-ref ref="PUBLISHING_JDBC" />
+  </logger>
+
+  <!-- publishing logging end -->
+
+  <logger name="SYSTEM_OUT" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="systemOutAppender"/>
+  </logger>
+
+  <logger name="org">
+    <level value="WARN"/>
+  </logger>
+
+  <logger name="net">
+    <level value="WARN"/>
+  </logger>
+
+  <logger name="net.sf.ehcache">
+    <level value="ERROR"/>
+  </logger>
+
+  <logger name="com.app.application.deploy">
+    <level value="INFO"/>
+  </logger>
+
+  <logger name="com.app.application.tools.deploy">
+    <level value="INFO"/>
+  </logger>
+
+  <logger name="com.app.portlet.PortletContextImpl">
+    <level value="INFO"/>
+  </logger>
+
+  <logger name="com.product.application.platform.filters.PlatformThreadLocalFilter">
+    <level value="FATAL"/>
+  </logger>
+
+  <logger name="com.product.application.platform.app.poller">
+    <level value="WARN"/>
+  </logger>
+
+  <logger name="com.app">
+    <level value="ERROR"/>
+  </logger>
+
+  <logger name="request" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="requestLogAppender"/>
+  </logger>
+
+  <logger name="org.springframework.web.portlet.DispatcherPortlet">
+    <level value="INFO"/>
+  </logger>
+
+  <logger name="com.app.portlet.PortletConfigFactory">
+    <level value="INFO"/>
+  </logger>
+
+  <logger name="org.apache.solr">
+    <level value="WARN"/>
+  </logger>
+
+  <logger name="com.product.application.service.impl.ums.Server">
+    <level value="WARN"/>
+  </logger>
+
+  <logger name="com.product.application.service.impl.ums.AppContext">
+    <level value="WARN"/>
+  </logger>
+
+  <logger name="com.product.application.app.translation">
+    <level value="FATAL"/>
+  </logger>
+    <logger name="com.product.application.app.language">
+    <level value="DEBUG"/>
+  </logger>
+
+  <logger name="ums" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="umsLogAppender"/>
+  </logger>
+
+	<logger name="SHMOXI" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="SHMOXILogAppender"/>
+	</logger>
+
+  <logger name="openbet" additivity="false">
+    <level value="INFO"/>
+    <appender-ref ref="openbetLogAppender"/>
+  </logger>
+
+  <logger name="vf" additivity="false">
+    <level value="DEBUG"/>
+    <appender-ref ref="vfLogAppender"/>
+  </logger>
+
+  <logger name="adminAudit" additivity="false">
+		<level value="INFO"/>
+		<appender-ref ref="auditLogAppender"/>
+  </logger>
+
+  <logger name="com.product.application.util.ApplicationContextDumper">
+    <level value="DEBUG"/>
+    <appender-ref ref="springDump"/>
+  </logger>
+
+  <!-- Staging and remote publishing -->
+  <logger name="com.product.portlet.communities.messaging">
+    <level value="DEBUG"/>
+  </logger>
+
+  <logger name="com.app.application.lar">
+    <level value="DEBUG"/>
+  </logger>
+
+  <logger name="com.app.portlet.documentlibrary.lar">
+    <level value="DEBUG"/>
+  </logger>
+
+  <logger name="com.app.portlet.journal.lar">
+    <level value="DEBUG"/>
+  </logger>
+
+  <logger name="org.apache.jackrabbit">
+    <level value="ERROR"/>
+  </logger>
+
+  <logger name="com.app.application.tools.deploy.BaseDeployer">
+    <level value="DEBUG"/>
+  </logger>
+
+    <logger name="org.jgroups">
+        <level value="DEBUG"/>
+    </logger>
+
+    <logger name="net.sf.ehcache.distribution.jgroups">
+        <level value="DEBUG"/>
+    </logger>
+
+    <root>
+    <level value="INFO"/>
+    <appender-ref ref="FILE_SYNC"/>
+  </root>
+
+</log4j:configuration>

@@ -1,0 +1,12 @@
+wpl_version: wpl3_sbt_v2
+
+
+# config for zabbix, possible values: ["admin","public_cluster_nodes_2","public_cluster_nodes_10" - nodes amount]
+
+application_node_type: public_cluster_nodes_2
+
+
+# for coloring bash, it will override global var that is set in hosts,
+# possible values:["dev","test","staging","production"]
+
+environment_type: test

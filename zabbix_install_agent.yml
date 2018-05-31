@@ -1,0 +1,15 @@
+---
+
+
+- hosts: "{{ hosti }}"
+
+  gather_facts: True
+  sudo: True
+
+  vars:
+    wpl_version: Null
+    application_node_type: Null
+    application_node_amount: Null
+
+  roles:
+    - zabbix_agent

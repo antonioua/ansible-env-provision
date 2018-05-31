@@ -1,0 +1,10 @@
+---
+
+
+- include: wpl3_sbt/application_push_apps_bashrc.yml
+
+
+- include: wpl3_sbt/application_push_configs.yml
+
+
+- include: wpl3_sbt/application_restart_tomcat.yml
