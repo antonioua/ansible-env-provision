@@ -152,7 +152,7 @@ $ ansible-playbook -i ./hosts/application/prod/application_production_all.ini ap
 
 * Push jks_t.keystore to update CDN intermediate certificate:
 ~~~bash
-ansible-playbook -i hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e 'hosti=glp-wpl3galabingo-privil-admin-01.galaapplication.domain1' -t push_trust_keystore
+ansible-playbook -i hosts/application/prod/application_production_all.ini application_configure_application_node.yml -e 'hosti=node1.domain1' -t push_trust_keystore
 ~~~
 
 * Get vms list without new lines
